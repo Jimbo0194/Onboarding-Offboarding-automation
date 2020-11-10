@@ -10,7 +10,7 @@ $user_department= Read-Host -Prompt 'Enter user´s department'
 $user_office = Read-Host -Prompt 'Enter User´s Office Location'
 $user_company = Read-Host -Prompt 'Enter User´s Company'
 
-New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=Centric,DC=US" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
+New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=Domain,DC=Com" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
 $user_expires = Read-Host -Prompt 'Is the user temporal? (y/n)'
 
 # Select if the user expires or not
