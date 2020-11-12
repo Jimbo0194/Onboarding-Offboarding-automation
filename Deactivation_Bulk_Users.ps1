@@ -1,26 +1,20 @@
-# Import AD Module
-Import-Module ActiveDirectory
- 
-# Import the data from CSV file and assign it to variable
-$Import_csv = Import-Csv -Path "enter path location"
- 
-# Specify target OU where the users will be moved to
-$TargetOU = "OU=Disabled Users,DC=domain,DC=com"
- 
-$Import_csv | ForEach-Object {
- 
-    # Retrieve DN of User
-    $UserDN = (Get-ADUser -Identity $_.SamAccountName).distinguishedName
- 
-    Write-Host "Moving Accounts....."
- 
-    # Move user to target OU. Remove the -WhatIf parameter after you tested.
-    Move-ADObject -Identity $UserDN -TargetPath $TargetOU -WhatIf
-
-    # Hide from GAL
-     Get-ADUser -Filter "DisplayName -eq '$UserDN*'" -Properties * | Select-Object Displayname,msExchHideFromAddressLists
-} 
-Write-Host "Completed move"
-
-$ID = Read-Host -Prompt 'Enter employee ID'
-get-aduser -filter {employeeid -eq $ID}
+ForEach ($user in (Import-CSV "C:\Users\c-lmonteale\Documents\Deact_test.csv")){
+    $userccount= Get-ADUser -Filter "EmployeeID -eq  '$($user.ID.ToString())'"-Properties * | Select-Object SamAccountName
+    $userccount= $userccount.SamAccountName.tostring()
+    if ($userccount -ne $null){
+        Get-ADUser $userccount | Disable-ADAccount
+        $user_location= get-aduser $userccount | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
+        move-adobject -identity "$user_location" "OU=Disabled Users,DC=Centric,DC=US"
+        #Set description to users
+        Set-ADUser $userccount -Description "Disabled per ticket #286337"
+        #Remove all memberships
+        Get-ADUser $userccount -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false -verbose $_ -member "$user"} 
+        #Check user for report 
+        Get-ADUser $userccount -Properties * | Select-Object office, manager, department, title | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
+        'User '+ $userccount + ' Deactivated on Centric US' | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
+        net user $userccount /domain | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
+    }
+    if ($userccount -eq $null){ 
+    'User '+ $user.ID.ToString() + ' not found Centric US' | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
+        }}
+        
