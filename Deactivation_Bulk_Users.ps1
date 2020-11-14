@@ -8,7 +8,7 @@ ForEach ($user in (Import-CSV "C:\Users\c-lmonteale\Documents\Deact_test.csv"))
         #Set description to users
         Set-ADUser $userccount -Description "Disabled per ticket #286337"
         #Remove all memberships
-        Get-ADUser $userccount -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false -verbose $_ -member "$user"} 
+        Get-ADUser $userccount -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false -verbose $_ -member "$userccount"} 
         #Check user for report 
         Get-ADUser $userccount -Properties * | Select-Object office, manager, department, title | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
         'User '+ $userccount + ' Deactivated on Centric US' | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
