@@ -1,20 +1,37 @@
-ForEach ($user in (Import-CSV "C:\Users\c-lmonteale\Documents\Deact_test.csv")){
-    $userccount= Get-ADUser -Filter "EmployeeID -eq  '$($user.ID.ToString())'"-Properties * | Select-Object SamAccountName
-    $userccount= $userccount.SamAccountName.tostring()
-    if ($userccount -ne $null){
-        Get-ADUser $userccount | Disable-ADAccount
-        $user_location= get-aduser $userccount | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
-        move-adobject -identity "$user_location" "OU=Disabled Users,DC=Centric,DC=US"
+# Import AD Module
+Import-Module ActiveDirectory
+# Import the data from CSV file and assign it to variable
+$user_accounts = Import-Csv -Path "C:\file\location"
+#Check if user exists within AD
+foreach($user in $user_accounts){
+    if ($user -ne ""){
+
+        $userccount  =  Get-ADUser -Filter "EmployeeID -eq  '$($user.employeeid.tostring())'"  -Properties * | Select-Object SamAccountName
+        #gets String value SamAccountName
+        $userccount = $userccount.SamAccountName.tostring()
+
+
+        #Disable AdUser account
+        Get-ADUser   $userccount |Disable-ADAccount
+
+        #gets aduser identeity
+        $user_location = get-aduser  $userccount | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
+        move-adobject -identity "$user_location" "OU=Disabled Users,DC=Domain,DC=com"
+
         #Set description to users
-        Set-ADUser $userccount -Description "Disabled per ticket #286337"
+        Set-ADUser  $userccount -Description "Disabled per ticket #286337"
+    
         #Remove all memberships
-        Get-ADUser $userccount -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false -verbose $_ -member "$userccount"} 
+        Get-ADUser  $userccount -Properties MemberOf | Select -Expand MemberOf |%{Remove-ADGroupMember -Confirm:$false -verbose $_ -members "$userccount"}
+    
         #Check user for report 
-        Get-ADUser $userccount -Properties * | Select-Object office, manager, department, title | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
-        'User '+ $userccount + ' Deactivated on Centric US' | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
-        net user $userccount /domain | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
+        $report += Get-ADUser  $userccount -Properties * | Select-Object office, manager, department, title
+        $report += 'User ' +  $userccount + 'Deactivated '
+        $report += net user  $userccount /domain
+    
+    }else {
+     $not_found += 'User ' +$user+ 'not Found on Domain'
     }
-    if ($userccount -eq $null){ 
-    'User '+ $user.ID.ToString() + ' not found Centric US' | Out-File -Append "C:\Users\c-lmonteale\Documents\report.csv"
-        }}
-        
+        $report += "`n"
+}
+$report | export-csv -Path C:\desktop\result.csv
