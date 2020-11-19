@@ -3,7 +3,7 @@ $user = Read-Host -Prompt 'Enter username'
 Disable-ADAccount $user 
 $time = Get-Date -Format "%M/dd/yyyy"
 $user_location = get-aduser $user | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
-move-adobject -identity "$user_location" "OU=Disabled Users,DC=Centric,DC=US"
+move-adobject -identity "$user_location" "OU=Disabled Users,DC=Domain,DC=Com"
 
 
 #Remove all memberships
