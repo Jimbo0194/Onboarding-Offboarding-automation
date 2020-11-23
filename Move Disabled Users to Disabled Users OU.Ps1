@@ -1,9 +1,8 @@
-#move users that requires disabling to the Disabled Users OU
 $user = Read-Host -Prompt 'Enter username'
 Disable-ADAccount $user 
 $time = Get-Date -Format "%M/dd/yyyy"
-$user_location = get-aduser $user | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
-move-adobject -identity "$user_location" "OU=Disabled Users,DC=Domain,DC=Com"
+$user_location = Get-ADUser $user | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
+move-adobject -identity "$user_location" "OU=Disabled Users,DC=Centric,DC=US"
 
 
 #Remove all memberships
@@ -11,7 +10,7 @@ Get-ADUser "$user" -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADG
 
 #Set description to users
 $ticket = Read-Host -Prompt "Enter deactivation request ID number"
-$fill = (-join("Deactivated per " + "$time" + " #$ticket"))
+$fill = (-join("Deactivated per " + "$time" + " ticket " + " #$ticket"))
 Set-ADUser $user -Description $fill
 
 #Check description for user
