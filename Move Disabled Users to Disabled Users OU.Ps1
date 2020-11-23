@@ -4,7 +4,6 @@ $time = Get-Date -Format "%M/dd/yyyy"
 $user_location = Get-ADUser $user | Select-Object distinguishedname -ExpandProperty distinguishedname -First 1
 move-adobject -identity "$user_location" "OU=Disabled Users,DC=Centric,DC=US"
 
-
 #Remove all memberships
 Get-ADUser "$user" -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false $_ -member "$user"} 
 
