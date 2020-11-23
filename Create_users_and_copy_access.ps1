@@ -10,46 +10,33 @@ $user_department= Read-Host -Prompt 'Enter user´s department'
 $user_office = Read-Host -Prompt 'Enter User´s Office Location'
 $user_company = Read-Host -Prompt 'Enter User´s Company'
 
-New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=Domain,DC=Com" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
-$user_expires = Read-Host -Prompt 'Is the user temporal? (y/n)'
+
+#Creating new user based on given info
+New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=Centric,DC=US" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
+
+# Gathering the main email and adding it as the main Proxy Address attribute in AD
+$address = "SMTP:"+"$main_email_new_user"
+$address= $address.Replace("""","")
+Set-ADUser $new_user_logon -add @{ProxyAddresses= $address}
 
 # Select if the user expires or not
+$user_expires = Read-Host -Prompt 'Is the user temporal? (y/n)'
 if ($user_expires -eq 'y') {
 
     Get-ADUser $new_user_logon | Set-ADAccountExpiration -TimeSpan 90.0:0
     Write-Host 'User will expire in 90 days'
 
 }else {
-    
+        
     Write-Host 'User has been created as permanent'
-    
-}
+        
+    }
 
 # Copy all memberships from existing user to new user
-
-    $copy = Read-host "Enter user to copy from"
-    $Sam  = Read-host " Enter user to copy to"
-    Get-ADUser -Identity $copy -Properties memberof | Select-Object -ExpandProperty memberof |  Add-ADGroupMember -Members $Sam
-
-
+$copy = Read-host "Enter user to copy from"
+Write-Host "Adding $new_user_logon to security groups from $copy"
+Get-ADUser -Identity $copy -Properties memberof | Select-Object -ExpandProperty memberof |  Add-ADGroupMember -Members $new_user_logon
 
 # Run a Get-ADUser and a net user to check the account and its setup
-Get-ADUser $new_user_logon -Properties office, manager, department, title
+Get-ADUser $new_user_logon -Properties office, manager, department, title, ProxyAddresses
 net user $new_user_logon /domain
-
-    
-#Name – Defines the Full Name
-
-#Given Name – Defines the First Name
-
-#Surname – Defines the Surname
-
-#SamAccountName – Defines the User Name
-
-#UserPrincipalName – Defines the UPN for the user account
-
-#Path – Defines the OU path. The default location is “CN=Users,DC=rebeladmin,DC=com”
-
-#AccountPassword – This will allow user to input password for the user and system will convert it to the relevant data type
-
-#Enable – defines if the user account status is enabled or disabled. 
