@@ -12,8 +12,8 @@ $user_company = Read-Host -Prompt 'Enter User´s Company'
 
 
 #Creating new user based on given info
-New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=Centric,DC=US" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
-
+New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=corporate,DC=domain,DC=com" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
+ 
 # Gathering the main email and adding it as the main Proxy Address attribute in AD
 $address = "SMTP:"+"$main_email_new_user"
 $address= $address.Replace("""","")
@@ -38,5 +38,6 @@ Write-Host "Adding $new_user_logon to security groups from $copy"
 Get-ADUser -Identity $copy -Properties memberof | Select-Object -ExpandProperty memberof |  Add-ADGroupMember -Members $new_user_logon
 
 # Run a Get-ADUser and a net user to check the account and its setup
-Get-ADUser $user -Properties office, manager, department, title, ProxyAddresses | select ProxyAddresses
-net user $user /domain
+Get-ADUser $new_user_logon -Properties office, manager, department, title
+Get-ADUser $new_user_logon -Properties ProxyAddresses | select ProxyAddresses
+net user $new_user_logon /domain
