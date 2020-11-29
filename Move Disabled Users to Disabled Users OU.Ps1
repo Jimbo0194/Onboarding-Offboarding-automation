@@ -5,7 +5,7 @@ $user_location = Get-ADUser $user | Select-Object distinguishedname -ExpandPrope
 move-adobject -identity "$user_location" "OU=Disabled Users,DC=domain,DC=com"
 
 #Remove all memberships
-Get-ADUser "$user" -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false $_ -member "$user"} 
+Get-ADUser "$user" -Properties MemberOf | Select -Expand MemberOf | %{Remove-ADGroupMember -Confirm:$false $_ -members "$user"} 
 
 #Remove SMTP addresses
 ForEach-Object { Set-AdUser -Identity $user -Clear ProxyAddresses }
