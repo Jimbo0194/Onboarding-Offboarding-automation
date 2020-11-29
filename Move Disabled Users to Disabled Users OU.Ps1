@@ -16,5 +16,6 @@ $fill = (-join("Deactivated per " + "$time" + " ticket " + " #$ticket"))
 Set-ADUser $user -Description $fill
 
 #Check description for user
-Get-ADUser $user -Properties office, manager, department, title, ProxyAddresses | select ProxyAddresses
+Get-ADUser $user -Properties office, manager, department, title, 
+Get-ADUser $user -Properties ProxyAddresses | select ProxyAddresses
 net user $user /domain
