@@ -19,7 +19,11 @@ while($menu -ne $false) {
     Write-Host '7 - @Centric.US'
     
     $choice = Read-Host 
-    if ($choice -eq 1) {
+    if ($choice -eq 0) {
+        $menu = $false
+        Write-Host 'Valid Option - Adding' + $domains_list[0] + 'to ' + $name_new_user
+        $main_email_new_user = $new_user_logon+$domains_list[0]
+    }elseif ($choice -eq 1) {
         $menu = $false
         Write-Host 'Valid Option - Adding' + $domains_list[1] + 'to ' + $name_new_user
         $main_email_new_user = $new_user_logon+$domains_list[1]
@@ -43,10 +47,6 @@ while($menu -ne $false) {
         $menu = $false
         Write-Host 'Valid Option - Adding' + $domains_list[6] + 'to ' + $name_new_user
         $main_email_new_user = $new_user_logon+$domains_list[6]
-    }elseif ($choice -eq 7) {
-        $menu = $false
-        Write-Host 'Valid Option - Adding' + $domains_list[7] + 'to ' + $name_new_user
-        $main_email_new_user = $new_user_logon+$domains_list[7]
     }
 }
 
@@ -57,7 +57,7 @@ $user_office = Read-Host -Prompt 'Enter User´s Office Location'
 $user_company = Read-Host -Prompt 'Enter User´s Company'
 
 #Creating new user based on given info
-New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=domain,DC=com" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
+New-ADUser -Name $name_new_user  -Displayname $name_new_user -office "$user_office" -GivenName $Firstname -company $user_company -Surname $surname -SamAccountName $new_user_logon -UserPrincipalName $main_email_new_user -Path "OU=Users,OU=CORP,DC=Centric,DC=US" -AccountPassword(Read-Host -AsSecureString "Type Password for User") -ChangePasswordAtLogon $true -Enabled $true -Manager $user_manager -Email $main_email_new_user -Department $user_department -Title $user_job_title
  
 # Gathering the main email and adding it as the main Proxy Address attribute in AD
 $address = "SMTP:"+"$main_email_new_user"
