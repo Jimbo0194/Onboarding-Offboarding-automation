@@ -21,7 +21,7 @@ while($menu -ne $false) {
     $choice = Read-Host 
     if ($choice -eq 1) {
         $menu = $false
-        Write-Host 'Valid Option - Adding' $domains_list[0] + 'to '  $name_new_user
+        Write-Host 'Valid Option - Adding' $domains_list[0]  'to '  $name_new_user
         $main_email_new_user = $new_user_logon+$domains_list[0]
     }elseif ($choice -eq 2) {
         $menu = $false
@@ -37,15 +37,15 @@ while($menu -ne $false) {
         $main_email_new_user = $new_user_logon+$domains_list[3]
     }elseif ($choice -eq 5) {
         $menu = $false
-        Write-Host 'Valid Option - Adding'  $domains_list[4] + 'to '  $name_new_user
+        Write-Host 'Valid Option - Adding'  $domains_list[4]  'to '  $name_new_user
         $main_email_new_user = $new_user_logon+$domains_list[4]
     }elseif ($choice -eq 6) {
         $menu = $false
-        Write-Host 'Valid Option - Adding'  $domains_list[5] + 'to '  $name_new_user
+        Write-Host 'Valid Option - Adding'  $domains_list[5] 'to '  $name_new_user
         $main_email_new_user = $new_user_logon+$domains_list[5]
     }elseif ($choice -eq 7) {
         $menu = $false
-        Write-Host 'Valid Option - Adding'  $domains_list[6] + 'to '  $name_new_user
+        Write-Host 'Valid Option - Adding'  $domains_list[6]  'to '  $name_new_user
         $main_email_new_user = $new_user_logon+$domains_list[6]
     }
 }
