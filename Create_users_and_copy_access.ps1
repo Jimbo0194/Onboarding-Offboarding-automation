@@ -8,6 +8,7 @@ $menu = $true
 
 # Menu display to select email domain
 while($menu -ne $false) {
+    Write-Host '                                                '
     Write-Host 'Domain List - Please select one based on number:'
 
     Write-Host '1 - @CentricBrands.com'
