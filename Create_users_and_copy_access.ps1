@@ -3,7 +3,7 @@ $name_new_user = Read-Host -Prompt 'Enter the full name of new user'
 $Firstname = Read-Host -Prompt 'Enter user´s first name'
 $surname = Read-Host -Prompt 'Enter user´s surname'
 $new_user_logon = Read-Host -Prompt 'Enter user´s logon (SamAccountName)'
-$domains_list = '@CentricBrands.com', '@JoesJeans.com', '@RobertGraham.US', '@BuffaloJeans.com','@Hudsonjeans.com', '@bcbg.com', '@Centric.US'
+$domains_list = '@domain1.com', '@doamin2.com', '@domain3.US', '@domain4.com','@domain5.com', '@domain6.com', '@domain7.com'
 $menu = $true
 
 # Menu display to select email domain
@@ -11,13 +11,13 @@ while($menu -ne $false) {
     Write-Host '                                                '
     Write-Host 'Domain List - Please select one based on number:'
 
-    Write-Host '1 - @CentricBrands.com'
-    Write-Host '2 - @JoesJeans.com'
-    Write-Host '3 - @RobertGraham.US'
-    Write-Host '4 - @BuffaloJeans.com'
-    Write-Host '5 - @Hudsonjeans.com'
-    Write-Host '6 - @bcbg.com'
-    Write-Host '7 - @Centric.US'
+    Write-Host '1 - @domain1.com'
+    Write-Host '2 - @domain2.com'
+    Write-Host '3 - @domain3.US'
+    Write-Host '4 - @domain4.com'
+    Write-Host '5 - @domain5.com'
+    Write-Host '6 - @domain6.com'
+    Write-Host '7 - @domain7.US'
     
     $choice = Read-Host 
     if ($choice -eq 1) {
